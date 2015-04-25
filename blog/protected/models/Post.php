@@ -142,12 +142,7 @@ class Post extends CActiveRecord
 		if(parent::beforeSave())
 		{
 			if($this->isNewRecord)
-			{
-				$this->create_time=$this->update_time=time();
-				$this->author_id=Yii::app()->user->id;
-			}
-			else
-				$this->update_time=time();
+				$this->create_time=time();
 			return true;
 		}
 		else
@@ -175,4 +170,13 @@ class Post extends CActiveRecord
 		Tag::model()->updateFrequency($this->tags, '');
 	}
 	
+	public function addComment($comment)
+	{
+		if(Yii::app()->params['commentNeedApproval'])
+			$comment->status=Comment::STATUS_PENDING;
+		else
+			$comment->status=Comment::STATUS_APPROVED;
+		$comment->post_id=$this->id;
+		return $comment->save();
+	}
 }

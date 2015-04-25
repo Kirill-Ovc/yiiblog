@@ -33,15 +33,11 @@ class Comment extends CActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('content, status, author, email, post_id', 'required'),
-			array('status, create_time, post_id', 'numerical', 'integerOnly'=>true),
+			array('content, author, email', 'required'),
 			array('author, email, url', 'length', 'max'=>128),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, content, status, create_time, author, email, url, post_id', 'safe', 'on'=>'search'),
+			array('email','email'),
+			array('url','url'),
 		);
 	}
 
@@ -63,13 +59,13 @@ class Comment extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'content' => 'Content',
+			'id' => 'Id',
+			'content' => 'Comment',
 			'status' => 'Status',
 			'create_time' => 'Create Time',
-			'author' => 'Author',
+			'author' => 'Name',
 			'email' => 'Email',
-			'url' => 'Url',
+			'url' => 'Website',
 			'post_id' => 'Post',
 		);
 	}
@@ -115,5 +111,11 @@ class Comment extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+	
+	public function approve()
+	{
+		$this->status=Comment::STATUS_APPROVED;
+		$this->update(array('status'));
 	}
 }
